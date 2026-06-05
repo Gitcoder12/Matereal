@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matereal — Material Explorer</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0c0c0e;
+  --surface: #141416;
+  --surface2: #1c1c20;
+  --border: #2a2a30;
+  --accent: #e8c547;
+  --accent2: #4ecdc4;
+  --text: #f0f0f0;
+  --muted: #666672;
+  --metal: #7eb8d4;
+  --composite: #e8855a;
+  --ceramic: #a8d4a0;
+  --polymer: #c97ee8;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'DM Mono',monospace;min-height:100vh}
+
+/* Header */
+header{padding:48px 40px 32px;border-bottom:1px solid var(--border);position:relative;overflow:hidden}
+header::before{content:'';position:absolute;top:-60px;right:-60px;width:300px;height:300px;background:radial-gradient(circle,#e8c54718 0%,transparent 70%);pointer-events:none}
+.header-top{display:flex;align-items:baseline;gap:16px;margin-bottom:8px}
+h1{font-family:'Playfair Display',serif;font-size:2.8rem;font-weight:700;letter-spacing:-0.02em}
+.header-tag{font-size:0.7rem;color:var(--accent);border:1px solid var(--accent);padding:3px 8px;letter-spacing:0.15em;text-transform:uppercase;align-self:center}
+.header-sub{color:var(--muted);font-size:0.8rem;letter-spacing:0.05em}
+
+/* Controls */
+.controls{padding:24px 40px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;border-bottom:1px solid var(--border)}
+.search-box{flex:1;min-width:200px;position:relative}
+.search-box input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:10px 14px 10px 36px;color:var(--text);font-family:'DM Mono',monospace;font-size:0.82rem;outline:none;transition:border-color 0.2s}
+.search-box input:focus{border-color:var(--accent)}
+.search-box input::placeholder{color:var(--muted)}
+.search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:0.9rem}
+.filters{display:flex;gap:8px;flex-wrap:wrap}
+.filter-btn{padding:8px 16px;background:transparent;border:1px solid var(--border);border-radius:4px;color:var(--muted);font-family:'DM Mono',monospace;font-size:0.75rem;letter-spacing:0.05em;cursor:pointer;transition:all 0.2s;text-transform:uppercase}
+.filter-btn:hover,.filter-btn.active{border-color:var(--accent);color:var(--accent);background:#e8c54710}
+.filter-btn[data-cat="metal"].active{border-color:var(--metal);color:var(--metal);background:#7eb8d410}
+.filter-btn[data-cat="composite"].active{border-color:var(--composite);color:var(--composite);background:#e8855a10}
+.filter-btn[data-cat="ceramic"].active{border-color:var(--ceramic);color:var(--ceramic);background:#a8d4a010}
+.filter-btn[data-cat="polymer"].active{border-color:var(--polymer);color:var(--polymer);background:#c97ee810}
+.sort-select{background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:8px 12px;color:var(--text);font-family:'DM Mono',monospace;font-size:0.75rem;outline:none;cursor:pointer}
+
+/* Compare bar */
+.compare-bar{padding:12px 40px;background:var(--surface);border-bottom:1px solid var(--border);display:none;align-items:center;gap:16px;flex-wrap:wrap}
+.compare-bar.show{display:flex}
+.compare-bar span{font-size:0.75rem;color:var(--muted);letter-spacing:0.05em}
+.compare-tags{display:flex;gap:8px;flex:1;flex-wrap:wrap}
+.compare-tag{padding:4px 10px;background:var(--accent);color:#000;font-size:0.72rem;border-radius:2px;display:flex;align-items:center;gap:6px;font-weight:500}
+.compare-tag button{background:none;border:none;cursor:pointer;color:#000;font-size:0.9rem;line-height:1;padding:0}
+.compare-btn{padding:8px 20px;background:var(--accent);border:none;border-radius:4px;color:#000;font-family:'DM Mono',monospace;font-size:0.75rem;font-weight:500;cursor:pointer;letter-spacing:0.05em;text-transform:uppercase}
+.compare-btn:hover{opacity:0.85}
+.clear-btn{padding:8px 16px;background:transparent;border:1px solid var(--border);border-radius:4px;color:var(--muted);font-family:'DM Mono',monospace;font-size:0.75rem;cursor:pointer}
+
+/* Grid */
+.grid{padding:32px 40px;display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:20px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:24px;cursor:pointer;transition:all 0.25s;position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--cat-color,var(--accent));transform:scaleX(0);transform-origin:left;transition:transform 0.3s}
+.card:hover{border-color:var(--border);transform:translateY(-2px);box-shadow:0 8px 32px #00000060}
+.card:hover::before{transform:scaleX(1)}
+.card.selected{border-color:var(--accent);background:var(--surface2)}
+.card.selected::before{transform:scaleX(1)}
+.card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px}
+.card-name{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;line-height:1.2}
+.cat-badge{font-size:0.65rem;text-transform:uppercase;letter-spacing:0.12em;padding:3px 8px;border-radius:2px;border:1px solid currentColor;white-space:nowrap}
+.cat-metal{color:var(--metal)}
+.cat-composite{color:var(--composite)}
+.cat-ceramic{color:var(--ceramic)}
+.cat-polymer{color:var(--polymer)}
+
+.props{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
+.prop{background:var(--bg);border-radius:3px;padding:8px 10px}
+.prop-label{font-size:0.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:2px}
+.prop-value{font-size:0.85rem;font-weight:500}
+
+.bar-group{margin-bottom:14px}
+.bar-label{display:flex;justify-content:space-between;font-size:0.68rem;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.06em}
+.bar-track{height:3px;background:var(--border);border-radius:2px;overflow:hidden}
+.bar-fill{height:100%;border-radius:2px;transition:width 0.6s cubic-bezier(0.4,0,0.2,1)}
+
+.tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px}
+.tag{font-size:0.65rem;padding:2px 7px;background:var(--surface2);border-radius:2px;color:var(--muted)}
+
+.card-footer{display:flex;justify-content:space-between;align-items:center}
+.cost{font-size:0.78rem;color:var(--accent)}
+.select-check{width:20px;height:20px;border:1px solid var(--border);border-radius:3px;display:flex;align-items:center;justify-content:center;transition:all 0.2s;font-size:0.75rem}
+.card.selected .select-check{background:var(--accent);border-color:var(--accent);color:#000}
+
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:#00000090;backdrop-filter:blur(4px);z-index:100;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.show{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:8px;max-width:900px;width:100%;max-height:90vh;overflow-y:auto;padding:40px}
+.modal-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:32px}
+.modal-title{font-family:'Playfair Display',serif;font-size:2rem}
+.modal-close{background:none;border:1px solid var(--border);color:var(--muted);width:36px;height:36px;border-radius:4px;cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center}
+.modal-close:hover{color:var(--text);border-color:var(--text)}
+
+.compare-table{width:100%;border-collapse:collapse}
+.compare-table th{text-align:left;padding:10px 14px;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);border-bottom:1px solid var(--border)}
+.compare-table td{padding:12px 14px;font-size:0.82rem;border-bottom:1px solid var(--border)}
+.compare-table tr:last-child td{border-bottom:none}
+.compare-table td:first-child{color:var(--muted);font-size:0.72rem;text-transform:uppercase;letter-spacing:0.06em}
+.best{color:var(--accent);font-weight:500}
+
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px}
+.detail-section h3{font-size:0.7rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--muted);margin-bottom:10px}
+.detail-list{list-style:none}
+.detail-list li{padding:5px 0;font-size:0.82rem;border-bottom:1px solid var(--border)}
+.detail-list li:last-child{border-bottom:none}
+.pro::before{content:'+ ';color:#4ecdc4}
+.con::before{content:'− ';color:#ff6b6b}
+
+/* Empty */
+.empty{text-align:center;padding:80px 40px;color:var(--muted)}
+.empty h3{font-family:'Playfair Display',serif;font-size:1.5rem;margin-bottom:8px;color:var(--text)}
+
+@media(max-width:600px){
+  header,.controls,.grid{padding-left:16px;padding-right:16px}
+  h1{font-size:2rem}
+  .grid{grid-template-columns:1fr}
+  .detail-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <h1>Matereal</h1>
+    <span class="header-tag">v1.0</span>
+  </div>
+  <p class="header-sub">Material intelligence platform — explore, compare, decide</p>
+</header>
+
+<div class="controls">
+  <div class="search-box">
+    <span class="search-icon">⌕</span>
+    <input type="text" id="search" placeholder="Search materials, applications...">
+  </div>
+  <div class="filters">
+    <button class="filter-btn active" data-cat="all">All</button>
+    <button class="filter-btn" data-cat="metal">Metal</button>
+    <button class="filter-btn" data-cat="composite">Composite</button>
+    <button class="filter-btn" data-cat="ceramic">Ceramic</button>
+    <button class="filter-btn" data-cat="polymer">Polymer</button>
+  </div>
+  <select class="sort-select" id="sort">
+    <option value="name">Sort: Name</option>
+    <option value="strength">Sort: Strength ↓</option>
+    <option value="density">Sort: Density ↓</option>
+    <option value="cost">Sort: Cost ↓</option>
+    <option value="thermal">Sort: Thermal ↓</option>
+  </select>
+</div>
+
+<div class="compare-bar" id="compare-bar">
+  <span>COMPARE</span>
+  <div class="compare-tags" id="compare-tags"></div>
+  <button class="compare-btn" id="do-compare">Compare →</button>
+  <button class="clear-btn" id="clear-compare">Clear</button>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<div class="modal-overlay" id="modal">
+  <div class="modal" id="modal-content"></div>
+</div>
+
+<script>
+const MATERIALS = [
+  { id:"M001", name:"Structural Steel (SS400)", category:"metal", density_kg_m3:7850, tensile_strength_mpa:400, thermal_conductivity_w_mk:50, cost_usd_kg:0.8, applications:["construction","bridges","machinery"], pros:["high strength","weldable","recyclable"], cons:["heavy","corrodes without treatment"] },
+  { id:"M002", name:"Aluminium 6061", category:"metal", density_kg_m3:2700, tensile_strength_mpa:310, thermal_conductivity_w_mk:167, cost_usd_kg:2.1, applications:["aerospace","automotive","electronics"], pros:["lightweight","corrosion resistant","machinable"], cons:["lower strength than steel","harder to weld than steel"] },
+  { id:"M003", name:"Carbon Fibre (CFRP)", category:"composite", density_kg_m3:1600, tensile_strength_mpa:3500, thermal_conductivity_w_mk:7, cost_usd_kg:30, applications:["aerospace","motorsport","prosthetics"], pros:["very high strength-to-weight","stiff"], cons:["expensive","brittle under impact"] },
+  { id:"M004", name:"Borosilicate Glass", category:"ceramic", density_kg_m3:2230, tensile_strength_mpa:60, thermal_conductivity_w_mk:1.1, cost_usd_kg:3.5, applications:["lab equipment","cookware","optics"], pros:["thermal shock resistant","chemically inert"], cons:["brittle","low tensile strength"] },
+  { id:"M005", name:"Nylon 6,6 (PA66)", category:"polymer", density_kg_m3:1140, tensile_strength_mpa:80, thermal_conductivity_w_mk:0.25, cost_usd_kg:4.0, applications:["gears","bearings","textiles","3D printing"], pros:["self-lubricating","tough","lightweight"], cons:["absorbs moisture","degrades under UV"] },
+  { id:"M006", name:"Titanium Grade 5", category:"metal", density_kg_m3:4430, tensile_strength_mpa:950, thermal_conductivity_w_mk:6.7, cost_usd_kg:35, applications:["aerospace","medical implants","racing"], pros:["exceptional strength-to-weight","biocompatible","corrosion proof"], cons:["expensive","difficult to machine"] },
+  { id:"M007", name:"PEEK", category:"polymer", density_kg_m3:1320, tensile_strength_mpa:100, thermal_conductivity_w_mk:0.29, cost_usd_kg:80, applications:["medical devices","aerospace","semiconductor"], pros:["high temperature resistance","chemical resistant","strong"], cons:["very expensive","hard to process"] },
+  { id:"M008", name:"Silicon Carbide", category:"ceramic", density_kg_m3:3210, tensile_strength_mpa:350, thermal_conductivity_w_mk:120, cost_usd_kg:10, applications:["cutting tools","armor","semiconductors"], pros:["extreme hardness","high thermal conductivity","wear resistant"], cons:["brittle","difficult to fabricate"] }
+];
+
+const CAT_COLORS = { metal:'#7eb8d4', composite:'#e8855a', ceramic:'#a8d4a0', polymer:'#c97ee8' };
+const MAX = { strength: Math.max(...MATERIALS.map(m=>m.tensile_strength_mpa)), density: Math.max(...MATERIALS.map(m=>m.density_kg_m3)), thermal: Math.max(...MATERIALS.map(m=>m.thermal_conductivity_w_mk)), cost: Math.max(...MATERIALS.map(m=>m.cost_usd_kg)) };
+
+let selected = new Set();
+let activeFilter = 'all';
+let searchTerm = '';
+let sortBy = 'name';
+
+function filtered() {
+  let list = MATERIALS.filter(m => {
+    const matchCat = activeFilter === 'all' || m.category === activeFilter;
+    const q = searchTerm.toLowerCase();
+    const matchSearch = !q || m.name.toLowerCase().includes(q) || m.category.includes(q) || m.applications.some(a=>a.includes(q));
+    return matchCat && matchSearch;
+  });
+  list.sort((a,b) => {
+    if(sortBy==='name') return a.name.localeCompare(b.name);
+    if(sortBy==='strength') return b.tensile_strength_mpa - a.tensile_strength_mpa;
+    if(sortBy==='density') return b.density_kg_m3 - a.density_kg_m3;
+    if(sortBy==='cost') return b.cost_usd_kg - a.cost_usd_kg;
+    if(sortBy==='thermal') return b.thermal_conductivity_w_mk - a.thermal_conductivity_w_mk;
+    return 0;
+  });
+  return list;
+}
+
+function renderCard(m) {
+  const color = CAT_COLORS[m.category];
+  const isSel = selected.has(m.id);
+  return `
+  <div class="card${isSel?' selected':''}" data-id="${m.id}" style="--cat-color:${color}" onclick="toggleSelect('${m.id}')">
+    <div class="card-header">
+      <div class="card-name">${m.name}</div>
+      <span class="cat-badge cat-${m.category}">${m.category}</span>
+    </div>
+    <div class="props">
+      <div class="prop"><div class="prop-label">Density</div><div class="prop-value">${m.density_kg_m3.toLocaleString()} kg/m³</div></div>
+      <div class="prop"><div class="prop-label">Tensile</div><div class="prop-value">${m.tensile_strength_mpa} MPa</div></div>
+      <div class="prop"><div class="prop-label">Thermal</div><div class="prop-value">${m.thermal_conductivity_w_mk} W/mK</div></div>
+      <div class="prop"><div class="prop-label">Cost</div><div class="prop-value">$${m.cost_usd_kg}/kg</div></div>
+    </div>
+    <div class="bar-group">
+      <div class="bar-label"><span>Strength</span><span>${m.tensile_strength_mpa} MPa</span></div>
+      <div class="bar-track"><div class="bar-fill" style="width:${(m.tensile_strength_mpa/MAX.strength*100).toFixed(1)}%;background:${color}"></div></div>
+    </div>
+    <div class="bar-group">
+      <div class="bar-label"><span>Thermal Conductivity</span><span>${m.thermal_conductivity_w_mk} W/mK</span></div>
+      <div class="bar-track"><div class="bar-fill" style="width:${(m.thermal_conductivity_w_mk/MAX.thermal*100).toFixed(1)}%;background:${color}88"></div></div>
+    </div>
+    <div class="tags">${m.applications.map(a=>`<span class="tag">${a}</span>`).join('')}</div>
+    <div class="card-footer">
+      <span class="cost">$${m.cost_usd_kg}/kg</span>
+      <div class="select-check">${isSel?'✓':''}</div>
+    </div>
+  </div>`;
+}
+
+function render() {
+  const list = filtered();
+  const grid = document.getElementById('grid');
+  if(!list.length) { grid.innerHTML=`<div class="empty"><h3>No materials found</h3><p>Try a different search or filter</p></div>`; return; }
+  grid.innerHTML = list.map(renderCard).join('');
+}
+
+function toggleSelect(id) {
+  if(selected.has(id)) { selected.delete(id); }
+  else { if(selected.size>=4){alert('Max 4 materials for comparison');return;} selected.add(id); }
+  updateCompareBar();
+  render();
+}
+
+function updateCompareBar() {
+  const bar = document.getElementById('compare-bar');
+  const tags = document.getElementById('compare-tags');
+  if(selected.size===0){ bar.classList.remove('show'); return; }
+  bar.classList.add('show');
+  tags.innerHTML = [...selected].map(id=>{
+    const m = MATERIALS.find(x=>x.id===id);
+    return `<span class="compare-tag">${m.name}<button onclick="event.stopPropagation();toggleSelect('${id}')">×</button></span>`;
+  }).join('');
+}
+
+function showCompare() {
+  if(selected.size<2){ alert('Select at least 2 materials'); return; }
+  const mats = [...selected].map(id=>MATERIALS.find(m=>m.id===id));
+  const props = [
+    { label:'Category', key: m=>m.category, best: null },
+    { label:'Density (kg/m³)', key: m=>m.density_kg_m3, best:'min' },
+    { label:'Tensile Strength (MPa)', key: m=>m.tensile_strength_mpa, best:'max' },
+    { label:'Thermal Conductivity (W/mK)', key: m=>m.thermal_conductivity_w_mk, best:'max' },
+    { label:'Cost ($/kg)', key: m=>m.cost_usd_kg, best:'min' },
+    { label:'Applications', key: m=>m.applications.join(', '), best:null },
+    { label:'Pros', key: m=>m.pros.join(', '), best:null },
+    { label:'Cons', key: m=>m.cons.join(', '), best:null },
+  ];
+  const headers = `<tr><th>Property</th>${mats.map(m=>`<th>${m.name}</th>`).join('')}</tr>`;
+  const rows = props.map(p=>{
+    const vals = mats.map(m=>p.key(m));
+    let bestIdx = -1;
+    if(p.best==='max') bestIdx = vals.indexOf(Math.max(...vals.filter(v=>typeof v==='number')));
+    if(p.best==='min') bestIdx = vals.indexOf(Math.min(...vals.filter(v=>typeof v==='number')));
+    return `<tr><td>${p.label}</td>${mats.map((m,i)=>`<td class="${i===bestIdx?'best':''}">${p.key(m)}</td>`).join('')}</tr>`;
+  }).join('');
+  document.getElementById('modal-content').innerHTML = `
+    <div class="modal-header">
+      <h2 class="modal-title">Material Comparison</h2>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <table class="compare-table"><thead>${headers}</thead><tbody>${rows}</tbody></table>
+    <p style="margin-top:16px;font-size:0.72rem;color:var(--muted)">★ Highlighted values are best-in-class for that property</p>`;
+  document.getElementById('modal').classList.add('show');
+}
+
+function closeModal(){ document.getElementById('modal').classList.remove('show'); }
+
+document.getElementById('search').addEventListener('input', e=>{ searchTerm=e.target.value; render(); });
+document.getElementById('sort').addEventListener('change', e=>{ sortBy=e.target.value; render(); });
+document.querySelectorAll('.filter-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    activeFilter = btn.dataset.cat;
+    render();
+  });
+});
+document.getElementById('do-compare').addEventListener('click', showCompare);
+document.getElementById('clear-compare').addEventListener('click',()=>{ selected.clear(); updateCompareBar(); render(); });
+document.getElementById('modal').addEventListener('click', e=>{ if(e.target===e.currentTarget) closeModal(); });
+
+render();
+</script>
+</body>
+</html>
