@@ -1,7 +1,385 @@
-[
-  { "id": "M001", "name": "Structural Steel (SS400)", "category": "metal", "density_kg_m3": 7850, "tensile_strength_mpa": 400, "thermal_conductivity_w_mk": 50, "cost_usd_kg": 0.8, "applications": ["construction", "bridges", "machinery"], "pros": ["high strength", "weldable", "recyclable"], "cons": ["heavy", "corrodes without treatment"] },
-  { "id": "M002", "name": "Aluminium 6061", "category": "metal", "density_kg_m3": 2700, "tensile_strength_mpa": 310, "thermal_conductivity_w_mk": 167, "cost_usd_kg": 2.1, "applications": ["aerospace", "automotive", "electronics"], "pros": ["lightweight", "corrosion resistant", "machinable"], "cons": ["lower strength than steel", "harder to weld than steel"] },
-  { "id": "M003", "name": "Carbon Fibre (CFRP)", "category": "composite", "density_kg_m3": 1600, "tensile_strength_mpa": 3500, "thermal_conductivity_w_mk": 7, "cost_usd_kg": 30, "applications": ["aerospace", "motorsport", "prosthetics"], "pros": ["very high strength-to-weight", "stiff"], "cons": ["expensive", "brittle under impact"] },
-  { "id": "M004", "name": "Borosilicate Glass", "category": "ceramic", "density_kg_m3": 2230, "tensile_strength_mpa": 60, "thermal_conductivity_w_mk": 1.1, "cost_usd_kg": 3.5, "applications": ["lab equipment", "cookware", "optics"], "pros": ["thermal shock resistant", "chemically inert"], "cons": ["brittle", "low tensile strength"] },
-  { "id": "M005", "name": "Nylon 6,6 (PA66)", "category": "polymer", "density_kg_m3": 1140, "tensile_strength_mpa": 80, "thermal_conductivity_w_mk": 0.25, "cost_usd_kg": 4.0, "applications": ["gears", "bearings", "textiles", "3D printing"], "pros": ["self-lubricating", "tough", "lightweight"], "cons": ["absorbs moisture", "degrades under UV"] }
-]
+{
+  "applications": [
+    "aerospace", "automotive", "building_construction", "consumer_electronics",
+    "kitchenware", "furniture", "medical_devices", "sporting_goods",
+    "packaging", "electrical_conductors", "electrical_insulators",
+    "thermal_insulation", "machinery_parts", "piping_valves", "jewelry"
+  ],
+  "materials": [
+    {
+      "id": 1,
+      "name": "Aluminum 6061-T6",
+      "category": "metal",
+      "properties": {
+        "density_g_cm3": 2.7,
+        "tensile_strength_mpa": 310,
+        "hardness_hb": 95,
+        "max_temp_c": 200
+      },
+      "applications": ["aerospace", "automotive", "consumer_electronics", "machinery_parts"],
+      "cost_per_kg_usd": 2.5,
+      "recyclable": true,
+      "description": "General‑purpose aluminum alloy, weldable and machinable."
+    },
+    {
+      "id": 2,
+      "name": "Stainless Steel 304",
+      "category": "metal",
+      "properties": {
+        "density_g_cm3": 8.0,
+        "tensile_strength_mpa": 505,
+        "hardness_hb": 88,
+        "max_temp_c": 870
+      },
+      "applications": ["kitchenware", "piping_valves", "medical_devices", "building_construction"],
+      "cost_per_kg_usd": 3.2,
+      "recyclable": true,
+      "description": "Corrosion‑resistant, food‑grade stainless steel."
+    },
+    {
+      "id": 3,
+      "name": "ABS Plastic",
+      "category": "polymer",
+      "properties": {
+        "density_g_cm3": 1.04,
+        "tensile_strength_mpa": 40,
+        "hardness_rockwell_r": 70,
+        "max_temp_c": 80
+      },
+      "applications": ["consumer_electronics", "automotive", "sporting_goods"],
+      "cost_per_kg_usd": 1.2,
+      "recyclable": false,
+      "description": "Tough, impact‑resistant thermoplastic for injection molding."
+    },
+    {
+      "id": 4,
+      "name": "Polycarbonate (PC)",
+      "category": "polymer",
+      "properties": {
+        "density_g_cm3": 1.2,
+        "tensile_strength_mpa": 70,
+        "hardness_rockwell_r": 75,
+        "max_temp_c": 115
+      },
+      "applications": ["consumer_electronics", "sporting_goods", "medical_devices"],
+      "cost_per_kg_usd": 3.5,
+      "recyclable": true,
+      "description": "Transparent, high impact strength, used in eyewear and housings."
+    },
+    {
+      "id": 5,
+      "name": "Oak Wood",
+      "category": "wood",
+      "properties": {
+        "density_g_cm3": 0.75,
+        "tensile_strength_mpa": 70,
+        "hardness_janka": 1290,
+        "max_temp_c": 60
+      },
+      "applications": ["furniture", "building_construction", "flooring"],
+      "cost_per_kg_usd": 1.8,
+      "recyclable": true,
+      "description": "Hard, durable hardwood for furniture and flooring."
+    },
+    {
+      "id": 6,
+      "name": "Carbon Fiber Composite (60% epoxy)",
+      "category": "composite",
+      "properties": {
+        "density_g_cm3": 1.6,
+        "tensile_strength_mpa": 3500,
+        "hardness_hb": 90,
+        "max_temp_c": 150
+      },
+      "applications": ["aerospace", "automotive", "sporting_goods", "consumer_electronics"],
+      "cost_per_kg_usd": 35.0,
+      "recyclable": false,
+      "description": "Extremely high strength‑to‑weight ratio, used in race cars and aircraft."
+    },
+    {
+      "id": 7,
+      "name": "Copper (C110)",
+      "category": "metal",
+      "properties": {
+        "density_g_cm3": 8.96,
+        "tensile_strength_mpa": 220,
+        "hardness_hb": 35,
+        "max_temp_c": 1085
+      },
+      "applications": ["electrical_conductors", "piping_valves", "jewelry"],
+      "cost_per_kg_usd": 9.0,
+      "recyclable": true,
+      "description": "Excellent electrical and thermal conductivity."
+    },
+    {
+      "id": 8,
+      "name": "Glass (Soda‑lime)",
+      "category": "ceramic",
+      "properties": {
+        "density_g_cm3": 2.5,
+        "tensile_strength_mpa": 50,
+        "hardness_mohs": 6,
+        "max_temp_c": 500
+      },
+      "applications": ["packaging", "building_construction", "kitchenware"],
+      "cost_per_kg_usd": 1.0,
+      "recyclable": true,
+      "description": "Transparent, brittle, used in windows and bottles."
+    },
+    {
+      "id": 9,
+      "name": "Titanium Ti-6Al-4V",
+      "category": "metal",
+      "properties": {
+        "density_g_cm3": 4.43,
+        "tensile_strength_mpa": 950,
+        "hardness_hb": 340,
+        "max_temp_c": 400
+      },
+      "applications": ["aerospace", "medical_devices", "sporting_goods", "jewelry"],
+      "cost_per_kg_usd": 45.0,
+      "recyclable": true,
+      "description": "High strength, low density, biocompatible."
+    },
+    {
+      "id": 10,
+      "name": "Silicone Rubber",
+      "category": "elastomer",
+      "properties": {
+        "density_g_cm3": 1.15,
+        "tensile_strength_mpa": 7,
+        "hardness_shore_a": 50,
+        "max_temp_c": 230
+      },
+      "applications": ["kitchenware", "medical_devices", "electrical_insulators"],
+      "cost_per_kg_usd": 8.0,
+      "recyclable": false,
+      "description": "Flexible, heat‑resistant, food‑grade silicone."
+    },
+    {
+      "id": 11,
+      "name": "Polyethylene (HDPE)",
+      "category": "polymer",
+      "properties": {
+        "density_g_cm3": 0.95,
+        "tensile_strength_mpa": 30,
+        "hardness_shore_d": 65,
+        "max_temp_c": 80
+      },
+      "applications": ["packaging", "piping_valves", "consumer_electronics"],
+      "cost_per_kg_usd": 1.0,
+      "recyclable": true,
+      "description": "Tough, chemical‑resistant, used for bottles and containers."
+    },
+    {
+      "id": 12,
+      "name": "Brass (C360)",
+      "category": "metal",
+      "properties": {
+        "density_g_cm3": 8.44,
+        "tensile_strength_mpa": 340,
+        "hardness_hb": 80,
+        "max_temp_c": 500
+      },
+      "applications": ["piping_valves", "jewelry", "electrical_conductors"],
+      "cost_per_kg_usd": 4.5,
+      "recyclable": true,
+      "description": "Machinable, corrosion‑resistant, decorative."
+    },
+    {
+      "id": 13,
+      "name": "Polyurethane Foam (Rigid)",
+      "category": "polymer",
+      "properties": {
+        "density_g_cm3": 0.03,
+        "tensile_strength_mpa": 1.5,
+        "hardness_shore_a": 20,
+        "max_temp_c": 100
+      },
+      "applications": ["thermal_insulation", "packaging", "furniture"],
+      "cost_per_kg_usd": 2.2,
+      "recyclable": false,
+      "description": "Lightweight, excellent thermal insulator."
+    },
+    {
+      "id": 14,
+      "name": "Epoxy Resin (Cast)",
+      "category": "polymer",
+      "properties": {
+        "density_g_cm3": 1.2,
+        "tensile_strength_mpa": 40,
+        "hardness_shore_d": 85,
+        "max_temp_c": 120
+      },
+      "applications": ["electrical_insulators", "automotive", "aerospace"],
+      "cost_per_kg_usd": 6.5,
+      "recyclable": false,
+      "description": "High strength adhesive and encapsulant."
+    },
+    {
+      "id": 15,
+      "name": "Cast Iron (Gray)",
+      "category": "metal",
+      "properties": {
+        "density_g_cm3": 7.2,
+        "tensile_strength_mpa": 200,
+        "hardness_hb": 180,
+        "max_temp_c": 800
+      },
+      "applications": ["machinery_parts", "building_construction", "piping_valves"],
+      "cost_per_kg_usd": 1.5,
+      "recyclable": true,
+      "description": "Good compressive strength, excellent damping capacity."
+    },
+    {
+      "id": 16,
+      "name": "Nylon 6/6 (PA66)",
+      "category": "polymer",
+      "properties": {
+        "density_g_cm3": 1.14,
+        "tensile_strength_mpa": 80,
+        "hardness_rockwell_r": 120,
+        "max_temp_c": 150
+      },
+      "applications": ["automotive", "consumer_electronics", "machinery_parts"],
+      "cost_per_kg_usd": 3.0,
+      "recyclable": true,
+      "description": "High mechanical strength, wear‑resistant."
+    },
+    {
+      "id": 17,
+      "name": "Magnesium Alloy AZ31B",
+      "category": "metal",
+      "properties": {
+        "density_g_cm3": 1.78,
+        "tensile_strength_mpa": 220,
+        "hardness_hb": 55,
+        "max_temp_c": 150
+      },
+      "applications": ["aerospace", "automotive", "consumer_electronics"],
+      "cost_per_kg_usd": 4.0,
+      "recyclable": true,
+      "description": "Lightest structural metal, good EMI shielding."
+    },
+    {
+      "id": 18,
+      "name": "Cork (Natural)",
+      "category": "natural",
+      "properties": {
+        "density_g_cm3": 0.24,
+        "tensile_strength_mpa": 1.5,
+        "hardness_shore_a": 30,
+        "max_temp_c": 80
+      },
+      "applications": ["thermal_insulation", "packaging", "furniture"],
+      "cost_per_kg_usd": 5.0,
+      "recyclable": true,
+      "description": "Renewable, buoyant, compressible."
+    },
+    {
+      "id": 19,
+      "name": "Graphene (coated film)",
+      "category": "nanomaterial",
+      "properties": {
+        "density_g_cm3": 2.2,
+        "tensile_strength_gpa": 130,
+        "hardness_hb": null,
+        "max_temp_c": 600
+      },
+      "applications": ["consumer_electronics", "electrical_conductors", "aerospace"],
+      "cost_per_kg_usd": 200.0,
+      "recyclable": false,
+      "description": "Ultra‑thin, ultra‑strong conductive layer."
+    },
+    {
+      "id": 20,
+      "name": "Concrete (Standard)",
+      "category": "composite",
+      "properties": {
+        "density_g_cm3": 2.4,
+        "tensile_strength_mpa": 2,
+        "compressive_strength_mpa": 30,
+        "max_temp_c": 300
+      },
+      "applications": ["building_construction"],
+      "cost_per_kg_usd": 0.1,
+      "recyclable": true,
+      "description": "Low cost, high compressive strength."
+    },
+    {
+      "id": 21,
+      "name": "Polyvinyl Chloride (PVC)",
+      "category": "polymer",
+      "properties": {
+        "density_g_cm3": 1.38,
+        "tensile_strength_mpa": 55,
+        "hardness_shore_d": 80,
+        "max_temp_c": 60
+      },
+      "applications": ["piping_valves", "electrical_insulators", "building_construction"],
+      "cost_per_kg_usd": 1.4,
+      "recyclable": true,
+      "description": "Rigid plastic, good chemical resistance."
+    },
+    {
+      "id": 22,
+      "name": "Bamboo (Engineered)",
+      "category": "wood",
+      "properties": {
+        "density_g_cm3": 0.7,
+        "tensile_strength_mpa": 100,
+        "hardness_janka": 1400,
+        "max_temp_c": 70
+      },
+      "applications": ["furniture", "building_construction", "sporting_goods"],
+      "cost_per_kg_usd": 1.5,
+      "recyclable": true,
+      "description": "Rapidly renewable, strong, lightweight."
+    },
+    {
+      "id": 23,
+      "name": "Ceramic Alumina (Al2O3)",
+      "category": "ceramic",
+      "properties": {
+        "density_g_cm3": 3.9,
+        "tensile_strength_mpa": 300,
+        "hardness_mohs": 9,
+        "max_temp_c": 1700
+      },
+      "applications": ["electrical_insulators", "medical_devices", "machinery_parts"],
+      "cost_per_kg_usd": 15.0,
+      "recyclable": false,
+      "description": "Extremely hard, wear‑resistant, excellent insulator."
+    },
+    {
+      "id": 24,
+      "name": "Gold (24k)",
+      "category": "metal",
+      "properties": {
+        "density_g_cm3": 19.3,
+        "tensile_strength_mpa": 120,
+        "hardness_hb": 25,
+        "max_temp_c": 1064
+      },
+      "applications": ["jewelry", "electrical_conductors"],
+      "cost_per_kg_usd": 60000,
+      "recyclable": true,
+      "description": "Noble metal, excellent conductivity, non‑tarnish."
+    },
+    {
+      "id": 25,
+      "name": "Polytetrafluoroethylene (PTFE/Teflon)",
+      "category": "polymer",
+      "properties": {
+        "density_g_cm3": 2.2,
+        "tensile_strength_mpa": 25,
+        "hardness_shore_d": 55,
+        "max_temp_c": 260
+      },
+      "applications": ["kitchenware", "electrical_insulators", "piping_valves"],
+      "cost_per_kg_usd": 20.0,
+      "recyclable": false,
+      "description": "Non‑stick, chemically inert, low friction."
+    }
+  ]
+}
